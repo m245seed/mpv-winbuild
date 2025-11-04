@@ -4,15 +4,21 @@
 [![releases](https://img.shields.io/github/v/release/zhongfly/mpv-winbuild)](https://github.com/zhongfly/mpv-winbuild/releases/latest)
 [![downloads](https://img.shields.io/github/downloads/zhongfly/mpv-winbuild/total)](https://github.com/zhongfly/mpv-winbuild/releases)
 
-Use Github Action to build mpv for Windows with latest commit.
+Use Github Action to build mpv for Windows.
 
 Based on <https://github.com/shinchiro/mpv-winbuild-cmake>.
 
-## Auto-Builds
+## Manual Builds
 
-Checks the mpv repository every hour for updates. If there is an update and it is relevant to the windows build, it will automatically run the compilation and **release it on success**.
+This repository uses a local copy of the mpv codebase (included as a git submodule). Builds are triggered manually via the GitHub Actions workflow dispatch interface.
 
-This repo only provides 64-bit version. If you need a 32-bit version, you can fork this repo and run `MPV` workflow by yourself.
+To build:
+1. Go to the Actions tab
+2. Select the "MPV" workflow
+3. Click "Run workflow"
+4. Configure build options and trigger the build
+
+This repo only provides 64-bit version by default. If you need a 32-bit version, you can fork this repo and run the `MPV` workflow with the appropriate build target.
 
 > [!NOTE]
 > `mpv-dev-xxxx.7z` is libmpv, including the `libmpv-2.dll` file.

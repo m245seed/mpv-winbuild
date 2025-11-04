@@ -62,22 +62,23 @@ jobs:
   params:
     runs-on: ubuntu-latest
     outputs:
-      sha: ${{ steps.script.outputs.sha }}
+      sha: ${{ steps.get_sha.outputs.sha }}
       matrix: ${{ steps.script.outputs.matrix }}
       matrix_bit: ${{ steps.script.outputs.matrix_bit }}
       patch_note: ${{ steps.script.outputs.patch_note }}
     steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: 'recursive'
+      - id: get_sha
+        run: |
+          cd mpv
+          sha=$(git rev-parse HEAD)
+          echo "sha=$sha" >> $GITHUB_OUTPUT
       - id: script
         uses: actions/github-script@v8
         with:
           script: |
-            const commit = await github.rest.repos.getCommit({
-              owner: 'mpv-player',
-              repo: 'mpv',
-              ref: `master`
-            })
-            core.setOutput('sha', String(commit.data.sha))
-            
             let matrix = {};
             let build_target = "${{ inputs.build_target }}"
             switch ( build_target ) {
@@ -194,6 +195,8 @@ jobs:
           git config --global rebase.autoStash true
           git config --global fetch.prune true
       - uses: actions/checkout@v5
+        with:
+          submodules: 'recursive'
       - name: Checkout toolchain
         uses: actions/checkout@v5
         with:
@@ -207,6 +210,11 @@ jobs:
           echo "cache_suffix=$(date "+%Y-%m-%d")-${{ github.run_id }}-${{ github.run_attempt }}" >> $GITHUB_ENV
           sed -i '/ccache_conf.in/d'  mpv-winbuild-cmake/CMakeLists.txt
           sed -i '/ccache/d' mpv-winbuild-cmake/exec.in
+
+      - name: Copy local mpv to src_packages
+        run: |
+          mkdir -p mpv-winbuild-cmake/src_packages
+          cp -r mpv mpv-winbuild-cmake/src_packages/
 
       - name: Lookup Toolchain Cache
         id: lookup_toolchain
