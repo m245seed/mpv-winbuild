@@ -79,8 +79,6 @@ jobs:
         uses: actions/github-script@v8
         with:
           script: |
-            core.setOutput('sha', '${{ steps.get_sha.outputs.sha }}')
-            
             let matrix = {};
             let build_target = "${{ inputs.build_target }}"
             switch ( build_target ) {
